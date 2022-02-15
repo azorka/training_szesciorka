@@ -73,3 +73,12 @@ plot Redfield ratio
 ```{r, echo=FALSE}
 plot(bg_chem$P, bg_chem$NO2 + bg_chem$NO3 + bg_chem$NH4)
 ```
+
+***
+
+TIL... 
+
+text files are good for git and github
+powerpoint not so much
+binaries not so much
+you can create a project in RSTudio, turn on Git for version control, and upload it to Github and then create a repository with it
