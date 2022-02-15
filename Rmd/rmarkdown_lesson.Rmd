@@ -15,6 +15,7 @@ Write some sample text here. **Bold text**
 
 -   apple
 -   banana
+-   kiwi
 -   list one
 -   list two
 -   new
@@ -60,6 +61,7 @@ calculate mean Redfield ratio
 
 ```{r}
 ratio <- (nitrate + nitrite + amm)/phos
+ratio
 ```
 
 # Plots
@@ -81,3 +83,7 @@ TIL...
 text files are good for git and github
 powerpoint not so much, binaries not so much
 you can create a project in RStudio, turn on Git for version control, and upload it to Github and then create a repository with it!
+
+***
+
+Will you find this change? Only time will tell.
