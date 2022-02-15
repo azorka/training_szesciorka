@@ -1,0 +1,75 @@
+---
+title: "My Project"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Testing R Markdown
+
+### Header 3
+
+Write some sample text here. **Bold text**
+
+-   apple
+-   banana
+-   list one
+-   list two
+-   new
+-   old
+
+*this is my italic text*
+
+*but wait there's more*
+
+1.  First item in ordered list
+2.  Second item in ordered list
+
+# H1
+
+## subheader
+
+```{r}
+x <- 4*3
+```
+
+---
+
+# Introduction
+
+* read in data
+
+```{r}
+bg_chem <- read.csv("../data/BGchem2008data.csv")
+```
+
+# Analysis
+
+calculate summary statistics
+
+```{r}
+nitrate <- mean(bg_chem$NO3)
+nitrite <- mean(bg_chem$NO2)
+amm <- mean(bg_chem$NH4)
+phos <- mean(bg_chem$P)
+```
+
+calculate mean Redfield ratio
+
+```{r}
+ratio <- (nitrate + nitrite + amm)/phos
+```
+
+# Plots
+
+```{r, echo=FALSE}
+plot(bg_chem$CTD_Depth,bg_chem$CTD_Temperature)
+```
+
+plot Redfield ratio
+
+```{r, echo=FALSE}
+plot(bg_chem$P, bg_chem$NO2 + bg_chem$NO3 + bg_chem$NH4)
+```
