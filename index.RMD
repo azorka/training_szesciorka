@@ -9,5 +9,5 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Research Projects
 
-- [Data Tidying](RMD/data_tidying.html)
-- [Rmarkdown Lesson](RMD/rmarkdown_lesson.html)
+- [Data Tidying](Rmd/data_tidying.html)
+- [Rmarkdown Lesson](Rmd/rmarkdown_lesson.html)
