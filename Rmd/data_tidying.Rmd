@@ -1,0 +1,236 @@
+---
+title: "Data Tidying"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE)
+```
+
+```{r, load packages, message=FALSE, warning=FALSE}
+library(dplyr)
+library(tidyr)
+library(readr)
+```
+
+## Clean Data 
+
+```{r, load data}
+catch_original <- read.csv(file="https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.302.1")
+```
+
+## Split, Apply, Combine
+ 
+ * remove unnecessary columns
+
+```{r, remove unnecessary columns}
+catch_data <- catch_original %>%  
+  select(Region, Year, Chinook, Sockeye, Coho, Pink, Chum)
+  # select(-All, -notesRegCode)
+head(catch_data)
+```
+
+ * check column typing
+ 
+```{r, check data}
+summary(catch_data)
+glimpse(catch_data)
+```
+
+ * reshape data
+
+```{r, convert data type}
+catch_clean <- catch_data %>% 
+  mutate(Chinook=as.numeric(Chinook))
+head(catch_clean)
+```
+
+```{r, fix na}
+catch_clean <- catch_data %>% 
+  mutate(Chinook=if_else(Chinook == "I", "1", Chinook)) %>% 
+  mutate(Chinook=as.integer(Chinook))
+head(catch_clean)
+```
+
+```{r, convert to long}
+catch_long <- catch_clean %>% 
+  pivot_longer(cols=-c(Region, Year), names_to="species", values_to="catch")
+head(catch_long)
+```
+
+```{r, convert to wide}
+catch_wide <- catch_long %>% 
+  pivot_wider(names_from=species, values_from=catch)
+head(catch_wide)
+```
+
+```{r, rename}
+catch_long <- catch_long %>% 
+  rename(catch_thousands=catch)
+head(catch_long)
+```
+
+```{r, add column}
+catch_long <- catch_long %>% 
+  mutate(catch=catch_thousands * 1000)
+head(catch_long)
+```
+
+```{r, remove column}
+catch_long <- catch_long %>% 
+  mutate(catch=catch_thousands * 1000) %>% 
+  select(-catch_thousands)
+head(catch_long)
+```
+
+## Summarize
+
+```{r, group and summarize}
+mean_region <- catch_long %>% 
+  group_by(Region) %>%
+  summarise(catch_mean=mean(catch))
+head(mean_region)
+```
+
+```{r, group and count}
+n_region <- catch_long %>% 
+  group_by(Region) %>%
+  summarize(n=n())
+head(n_region)
+```
+
+```{r, group and variance}
+var_region <- catch_long %>% 
+  group_by(Region) %>%
+  summarize(catch_var=var(catch))
+head(var_region)
+```
+
+```{r, mult group and mean}
+mean_sp_reg <- catch_long %>% 
+  group_by(Region,species) %>%
+  summarize(mean_sp_reg=mean(catch))
+head(mean_sp_reg)
+```
+
+## Filter
+
+```{r, filter SSE}
+SSE_catch <- catch_long %>% 
+  filter(Region == "SSE")
+head(SSE_catch)
+```
+
+```{r, filter >1 mill}
+mill_catch <- catch_long %>% 
+  filter(catch > 1000000)
+head(mill_catch)
+```
+
+```{r, filter SSE and Chinook}
+SSE_Chin_catch <- catch_long %>% 
+  filter(Region=="SSE", species=="Chinook")
+head(SSE_Chin_catch)
+```
+
+## Sorting
+
+```{r, sort}
+mean_region <- catch_long %>% 
+  group_by(Region) %>% 
+  summarise(mean_catch = mean(catch)) %>% 
+  arrange(mean_catch)
+head(mean_region)
+```
+
+```{r, reverse sort}
+mean_region <- catch_long %>% 
+  group_by(Region) %>% 
+  summarise(mean_catch = mean(catch)) %>% 
+  arrange(desc(mean_catch))
+head(mean_region)
+```
+
+## Joins 
+
+```{r, download other table}
+region_defs <- read.csv("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.303.1") %>% 
+    select(code, mgmtArea)
+head(region_defs)
+```
+
+```{r, left join}
+catch_joined <- left_join(catch_long, region_defs, by = c("Region" = "code"))
+head(catch_joined)
+```
+
+```{r, rename and join}
+region_defs <- region_defs %>% 
+  rename(Region = code, Region_Name = mgmtArea)
+catch_joined <- left_join(catch_long, region_defs, by = c("Region"))
+head(catch_joined)
+```
+
+```{r, separate}
+sites_df <- data.frame(site = c("HAW-101",
+                                "HAW-103",
+                                "OAH-320",
+                                "OAH-219",
+                                "MAI-039"))
+sites_df %>% 
+  separate(site, c("island", "site_number"), "-")
+```
+
+```{r}
+cities_df <- data.frame(city = c("Juneau AK", 
+                                 "Sitka AK", 
+                                 "Anchorage AK"))
+cities_df %>% 
+  separate(city, c("city", "state"), " ")
+```
+
+```{r, unite dates}
+dates_df <- data.frame(year = c("1930",
+                                "1930",
+                                "1930"),
+                       month = c("12",
+                                "12",
+                                "12"),
+                       day = c("14",
+                               "15",
+                               "16"))
+dates_df %>% 
+  unite(date, year, month, day, sep = "-")
+```
+
+```{r, unite city state}
+cities_df <- data.frame(cities_df %>% 
+  separate(city, c("city", "state"), " "))
+
+#cities_df <- 
+cities_df %>% 
+  unite(city_state, city, state, sep=" ")
+```
+
+# Final Summary
+
+```{r, final summary}
+catch_original <- read.csv(url("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.302.1", method = "libcurl"))
+region_defs <- read.csv(url("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/df35b.303.1", method = "libcurl")) %>% 
+    select(code, mgmtArea)
+
+mean_region <- catch_original %>%
+  select(-All, -notesRegCode) %>% 
+  mutate(Chinook = ifelse(Chinook == "I", 1, Chinook)) %>% 
+  mutate(Chinook = as.numeric(Chinook)) %>% 
+  pivot_longer(-c(Region, Year), names_to = "species", values_to = "catch") %>%
+  mutate(catch = catch*1000) %>% 
+  group_by(Region) %>% 
+  summarize(mean_catch = mean(catch)) %>% 
+  left_join(region_defs, by = c("Region" = "code"))
+
+head(mean_region)
+```
+
