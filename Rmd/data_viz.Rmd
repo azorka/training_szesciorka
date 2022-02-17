@@ -66,41 +66,23 @@ ggplot(aes(x = Year, y = escapement, color = Species)) + geom_line() + geom_poin
 ## Setting ggplot themes
 
 ```{r, filter Kodiak}
-kodiak_esc <- annual_esc %>% 
-  filter(SASAP.Region == "Kodiak")
+kodiak_esc <- annual_esc %>%filter(SASAP.Region == "Kodiak")
 ```
 
 ```{r, plot Kodiak}
-ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + 
-    geom_line() +
-    geom_point() +
-    ylab("Escapement") +
-    ggtitle("Kodiak Salmon Escapement") +
-    theme_bw()
+ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + geom_line() + geom_point() + ylab("Escapement") + ggtitle("Kodiak Salmon Escapement") + theme_bw()
 ```
 
 ```{r, plot diff theme}
-ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + 
-    geom_line() +
-    geom_point() +
-    ylab("Escapement") +
-    ggtitle("Kodiak Salmon Escapement") +
-    theme_gray()
+ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + geom_line() + geom_point() + ylab("Escapement") + ggtitle("Kodiak Salmon Escapement") + theme_gray()
 ```
 
 ```{r, improve plot}
-ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + 
-    geom_line() +
-    geom_point() +
-    ylab("Escapement") +
-    ggtitle("Kodiak Salmon Escapement") +
-    theme_bw() +
-    theme(legend.position = "bottom", legend.title = element_blank())
+ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + geom_line() + geom_point() + ylab("Escapement") + ggtitle("Kodiak Salmon Escapement") + theme_bw() + theme(legend.position = "bottom", legend.title = element_blank())
 ```
 
 ```{r, legend}
-my_theme <- theme_bw() + 
-  theme(legend.position = "bottom", legend.title = element_blank())
+my_theme <- theme_bw() + theme(legend.position = "bottom", legend.title = element_blank())
 ```
 
 ```{r, plot custom theme}
