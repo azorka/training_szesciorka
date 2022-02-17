@@ -110,3 +110,49 @@ ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + geom_line()
 ```{r, plot theme with angle}
 ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + geom_line() + geom_point() + ylab("Escapement") + ggtitle("Kodiak Salmon Escapement") + theme_bw() + theme(legend.position="bottom", legend.title=element_blank(), axis.text.x=element_text(angle=45))
 ```
+
+```{r, smart scales}
+ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + geom_line() + geom_point() + scale_y_continuous(labels = comma) + ylab("Escapement") + ggtitle("Kodiak Salmon Escapement") + my_theme
+```
+
+```{r, save table}
+ggsave("kodiak_esc.png", width = 3, height = 3, units = "in")
+```
+
+```{r, multiplot}
+ggplot(annual_esc, aes(x = Year, y = escapement, color = Species)) + geom_line() + geom_point() + scale_y_continuous(labels = comma) + facet_wrap(~SASAP.Region, scales = "free_y", ncol = 2) + ylab("Escapement") + my_theme
+```
+
+## Leaftlet
+
+```{r}
+locations <- esc %>% 
+  distinct(Location, Latitude, Longitude) %>% 
+  drop_na()
+datatable(locations)
+```
+
+```{r, leaflet}
+leaflet(locations) %>% 
+  addTiles() %>% 
+  addMarkers(lng = ~Longitude, lat = ~Latitude, popup = ~ Location)
+```
+
+```{r, leaflet wms}
+leaflet(locations) %>% 
+  addWMSTiles("https://www.gebco.net/data_and_products/gebco_web_services/web_map_service/mapserv?",
+              layers = 'GEBCO_LATEST',
+              attribution = "Imagery reproduced from the GEBCO_2014 Grid, version 20150318, www.gebco.net") %>%
+  addCircleMarkers(lng = ~Longitude,
+                   lat = ~Latitude,
+                   popup = ~ Location,
+                   radius = 5,
+                   # set fill properties
+                   fillColor = "salmon",
+                   fillOpacity = 1,
+                   # set stroke properties
+                   stroke = T,
+                   weight = 0.5,
+                   color = "white",
+                   opacity = 1)
+```
