@@ -13,7 +13,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(DT)
-library(scales) # install.packages("scales")
+library(scales)
 ```
 
 ```{r, load data}
@@ -79,7 +79,6 @@ ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) +
     theme_bw()
 ```
 
-
 ```{r, plot diff theme}
 ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + 
     geom_line() +
@@ -104,21 +103,10 @@ my_theme <- theme_bw() +
   theme(legend.position = "bottom", legend.title = element_blank())
 ```
 
-```{r, plot theme}
-ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + 
-    geom_line() +
-    geom_point() +
-    ylab("Escapement") +
-    ggtitle("Kodiak Salmon Escapement") +
-    my_theme
+```{r, plot custom theme}
+ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + geom_line() + geom_point() + ylab("Escapement") + ggtitle("Kodiak Salmon Escapement") + my_theme
 ```
 
-```{r, plot theme}
-ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + 
-    geom_line() +
-    geom_point() +
-    ylab("Escapement") +
-    ggtitle("Kodiak Salmon Escapement") +
-    theme_bw() + 
-  theme(legend.position = "bottom", legend.title = element_blank(), axis.text.x=element_text(angle=45))
+```{r, plot theme with angle}
+ggplot(kodiak_esc, aes(x = Year, y = escapement, color = Species)) + geom_line() + geom_point() + ylab("Escapement") + ggtitle("Kodiak Salmon Escapement") + theme_bw() + theme(legend.position="bottom", legend.title=element_blank(), axis.text.x=element_text(angle=45))
 ```
