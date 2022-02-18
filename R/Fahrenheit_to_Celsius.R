@@ -56,7 +56,7 @@ convert_temps <- function(Fahrenheit) {
 
 temps_df <- data.frame(convert_temps(seq(-100,100,10)))
 
-source("../functions/custom_theme.R")
+source("functions/custom_theme.R")
 
 #' Create function for plotting
 #'
